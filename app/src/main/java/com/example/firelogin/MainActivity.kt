@@ -14,7 +14,9 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.firelogin.navitator.NavigateFirebaseLoginNav
 
 import com.example.firelogin.ui.theme.FireLoginTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {

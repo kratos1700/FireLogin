@@ -25,7 +25,9 @@ fun NavigateFirebaseLoginNav() {
     NavHost(navController = navController, startDestination = Routes.LoginScreen.route){
         // Aquí se definen las rutas de la app
         composable(route = Routes.SingUpScreen.route){ SingUpScreen() }
-        composable(route = Routes.LoginScreen.route){ LoginScreen() }
+        composable(route = Routes.LoginScreen.route){ LoginScreen(
+            navigateToDetail = { navController.navigate(Routes.DetailScreen.route) }
+        ) }
         composable(route = Routes.DetailScreen.route){ DetailScreen() }
     }
 
