@@ -22,7 +22,7 @@ sealed class Routes (val route: String){
 @Composable
 fun NavigateFirebaseLoginNav() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Routes.SingUpScreen.route){
+    NavHost(navController = navController, startDestination = Routes.LoginScreen.route){
         // Aquí se definen las rutas de la app
         composable(route = Routes.SingUpScreen.route){ SingUpScreen() }
         composable(route = Routes.LoginScreen.route){ LoginScreen() }

@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 
@@ -37,7 +38,11 @@ fun SingUpScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Sign Up", style = MaterialTheme.typography.headlineLarge, modifier = Modifier.padding(bottom = 16.dp))
+        Text(
+            text = "Sign Up",
+            style = MaterialTheme.typography.headlineLarge,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
 
         OutlinedTextField(
             value = email,
@@ -67,7 +72,9 @@ fun SingUpScreen() {
 
         Button(
             onClick = { /* Acció del botó de registre */ },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
         ) {
             Text("Register")
         }
