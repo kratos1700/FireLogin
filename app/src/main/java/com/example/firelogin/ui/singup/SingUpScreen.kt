@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,15 +22,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.firelogin.ui.login.Progress
 
 
 @Composable
-fun SingUpScreen() {
+fun SingUpScreen(singUpViewModel: SingUpViewModel = hiltViewModel(), navigateToDetail: () -> Unit) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    val loading: Boolean by singUpViewModel.loading.collectAsState()
 
     Column(
         modifier = Modifier
@@ -38,6 +42,14 @@ fun SingUpScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+
+
+        if (loading) {
+
+            Progress()
+        }
+
+
         Text(
             text = "Sign Up",
             style = MaterialTheme.typography.headlineLarge,
@@ -71,7 +83,11 @@ fun SingUpScreen() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { /* Acció del botó de registre */ },
+            onClick = {
+                singUpViewModel.singUp(email, password){
+                    navigateToDetail()
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp)
