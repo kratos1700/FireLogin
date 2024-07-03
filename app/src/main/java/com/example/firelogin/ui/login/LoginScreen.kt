@@ -56,9 +56,10 @@ fun LoginScreen(
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var showPhoneLogin by remember { mutableStateOf(false) }
+   // var showPhoneLogin by remember { mutableStateOf(false) }
 
     val loading: Boolean by loginViewModel.loading.collectAsState()
+
 
 
     Column(
@@ -153,10 +154,7 @@ fun LoginScreen(
         // Botón para login con número de teléfono
         Button(
             onClick = {
-                showPhoneLogin = true
-
-                    navigateToVerificationPhone()
-
+               navigateToVerificationPhone()
 
             },
             modifier = Modifier
@@ -178,7 +176,6 @@ fun LoginScreen(
 
     }
 
-    // Dialogo para introducir el número de teléfono
 
 }
 

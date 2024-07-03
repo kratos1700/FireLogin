@@ -37,8 +37,7 @@ class LoginViewModel @Inject constructor(private val authService: AuthService) :
 
     lateinit var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
 
-    //  lateinit var verificationCode: String
-    // lateinit var verificationCode2: String
+
 
     init {
         checkUserLoggedIn()
@@ -95,6 +94,7 @@ class LoginViewModel @Inject constructor(private val authService: AuthService) :
                 _codeSent.value = true
                 _loading.value = false
                 Log.d("PhoneVerificationScreen", "ON_SEND_verificationId: $verificationId")
+
             }
         }
 

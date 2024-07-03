@@ -31,17 +31,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.firelogin.components.PinView
 
 
 @Composable
 fun PhoneVerificationScreen(
     loginViewModel: LoginViewModel = hiltViewModel(),
     navigateToDetail: () -> Unit,
-
 ) {
-
     val phoneNumber = rememberSaveable { mutableStateOf("") }
-    val otp = rememberSaveable { mutableStateOf("") }
     val codeSent by loginViewModel.codeSent.collectAsState()
     val loading by loginViewModel.loading.collectAsState()
     val verificationCode by loginViewModel.verificationCode.collectAsState()
@@ -119,41 +117,19 @@ fun PhoneVerificationScreen(
             )
         ) {
             Column {
-                TextField(
-                    enabled = !loading,
-                    value = otp.value,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    onValueChange = { if (it.length <= 6) otp.value = it },
-                    placeholder = { Text(text = "Enter your OTP") },
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
-                    supportingText = {
-                        Text(
-                            text = "${otp.value.length} / 6",
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.End,
-                        )
+                PinView(
+                    modifier = Modifier.padding(16.dp),
+                    pinLength = 6,
+                    onPinEntered = { pin ->
+                        if (pin.length == 6) {
+                            loginViewModel.verifyCode(pin)
+                        } else {
+                            Toast.makeText(context, "Please enter a valid OTP", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
-
-                Button(
-                    enabled = !loading,
-                    onClick = {
-                        if (otp.value.isEmpty() || otp.value.length < 6) {
-                            Toast.makeText(context, "Please enter a valid OTP", Toast.LENGTH_SHORT).show()
-                        } else {
-                            loginViewModel.verifyCode(otp.value)
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    Text(text = "Verify OTP", modifier = Modifier.padding(8.dp))
-                }
             }
         }
     }
@@ -165,36 +141,3 @@ fun PhoneVerificationScreen(
     }
 }
 
-
-/*
-
-@Composable
-fun PhoneVerificationScreen(loginViewModel: LoginViewModel = hiltViewModel(),
-                            onPinVerified: (String) -> Unit, navigateToDetail: () -> Unit
-) {
-
-    var pinVerifed by remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(text = "Enter the verification code sent to your phone", style = MaterialTheme.typography.bodyMedium)
-        Spacer(modifier = Modifier.height(16.dp))
-        PinView(
-            pinLength = 6,
-            onPinEntered = { pin ->
-                onPinVerified(pin)
-
-                pinVerifed = pin
-
-                loginViewModel.setPinVerifeid(pinVerifed){
-                    navigateToDetail()
-                }
-            }
-        )
-    }
-}*/
