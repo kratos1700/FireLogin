@@ -55,6 +55,7 @@ dependencies {
 
     //Dagger Hilt
     implementation(libs.com.google.dagger)
+
     ksp(libs.com.google.dagger.compiler)
     implementation(libs.com.google.dagger.navigation)
 

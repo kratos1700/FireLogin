@@ -60,6 +60,7 @@ fun LoginScreen(
 
     val loading: Boolean by loginViewModel.loading.collectAsState()
 
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -154,6 +155,9 @@ fun LoginScreen(
             onClick = {
                 showPhoneLogin = true
 
+                    navigateToVerificationPhone()
+
+
             },
             modifier = Modifier
                 .fillMaxWidth(),
@@ -174,24 +178,8 @@ fun LoginScreen(
 
     }
 
-    DialogPhone(
-        showDialog = showPhoneLogin,
-        onDismiss = { showPhoneLogin = false }) { phoneNumber ->
-        loginViewModel.loginWithPhone(
-            phoneNumber, activity = activity,
-            onVerificationCompleted = { navigateToDetail() },
-            onVerificationFailed = {
-                showToast("Ha havbido un error: $it", activity)
-            },
-            onCodeSend = {
-                         navigateToVerificationPhone()
+    // Dialogo para introducir el número de teléfono
 
-                //
-            }
-
-            )
-
-    }
 }
 
 

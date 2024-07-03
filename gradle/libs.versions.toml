@@ -23,6 +23,7 @@ firebaseAuth = "23.0.0"
 #Splash
 splash = "1.0.1"
 
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -55,6 +56,7 @@ com-google-dagger-navigation = { group = "androidx.hilt", name = "hilt-navigatio
 #Navigation
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navCompose" }
 androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navCompose" }
+
 
 
 [plugins]

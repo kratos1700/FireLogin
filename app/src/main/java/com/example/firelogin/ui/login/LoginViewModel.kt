@@ -2,6 +2,7 @@ package com.example.firelogin.ui.login
 
 import android.app.Activity
 import android.util.Log
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.firelogin.data.AuthService
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+
 @HiltViewModel
 class LoginViewModel @Inject constructor(private val authService: AuthService) : ViewModel() {
 
@@ -25,6 +27,18 @@ class LoginViewModel @Inject constructor(private val authService: AuthService) :
 
     private val _isLoggedIn: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
+
+    private val _verificationCode = MutableStateFlow<String?>(null)
+    val verificationCode: StateFlow<String?> = _verificationCode
+
+    private val _codeSent = MutableStateFlow(false)
+    val codeSent: StateFlow<Boolean> = _codeSent
+
+
+    lateinit var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
+
+    //  lateinit var verificationCode: String
+    // lateinit var verificationCode2: String
 
     init {
         checkUserLoggedIn()
@@ -36,7 +50,7 @@ class LoginViewModel @Inject constructor(private val authService: AuthService) :
         }
     }
 
-    fun login(email: String, password: String, navegateToDetail: () -> Unit) {
+    fun login(email: String, password: String, navigateToDetail: () -> Unit) {
         viewModelScope.launch {
             _loading.value = true
 
@@ -47,69 +61,151 @@ class LoginViewModel @Inject constructor(private val authService: AuthService) :
             if (result != null) {
                 _loading.value = false
                 _isLoggedIn.value = true
-                navegateToDetail()
-
+                navigateToDetail()
             }
             _loading.value = false
-
-
         }
     }
 
+
+    fun loginWithPhone(phoneNumber: String, activity: Activity) {
+        _loading.value = true
+
+        callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                viewModelScope.launch {
+                    val user = authService.completeRegistrerWithPhone(credential)
+                    if (user != null) {
+                        _isLoggedIn.value = true
+                    }
+                    _loading.value = false
+                }
+            }
+
+            override fun onVerificationFailed(e: FirebaseException) {
+                Log.w("PhoneVerificationScreen", "onVerificationFailed", e)
+                _loading.value = false
+            }
+
+            override fun onCodeSent(
+                verificationId: String,
+                token: PhoneAuthProvider.ForceResendingToken
+            ) {
+                _verificationCode.value = verificationId
+                _codeSent.value = true
+                _loading.value = false
+                Log.d("PhoneVerificationScreen", "ON_SEND_verificationId: $verificationId")
+            }
+        }
+
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                authService.loginWithPhone(phoneNumber, activity, callbacks)
+            }
+        }
+    }
+
+    fun verifyCode(phoneCode: String) {
+        val verificationId = _verificationCode.value
+        if (verificationId != null) {
+            _loading.value = true
+            viewModelScope.launch {
+                val user = authService.verifyCode(verificationId, phoneCode)
+                if (user != null) {
+                    _isLoggedIn.value = true
+                } else {
+                    _loading.value = false
+                    Log.e("PhoneVerificationScreen", "Verification failed")
+                }
+            }
+        } else {
+            Log.e("PhoneVerificationScreen", "Verification ID is null")
+        }
+    }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+    /*
     fun loginWithPhone(
         phoneNumber: String,
         activity: Activity,
         onVerificationCompleted: () -> Unit,
         onVerificationFailed: (String) -> Unit,
-        onCodeSend: () -> Unit,
-
+        onCodeSend: () -> Unit
     ) {
-
         viewModelScope.launch {
             _loading.value = true
 
             val callback = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                 override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                    Log.d("PhoneVerificationScreen", "onVerificationCompleted:$credential")
 
-                    Log.d("TAG", "onVerificationCompleted:$credential")
-
-                    //signInWithPhoneAuthCredential(credential)
-                    onVerificationCompleted()
-
-
+                    viewModelScope.launch {
+                        val result = withContext(Dispatchers.IO) {
+                            authService.completeRegistrerWithPhone(credential)
+                        }
+                        if (result != null) {
+                            onVerificationCompleted()
+                        }
+                    }
                 }
 
                 override fun onVerificationFailed(e: FirebaseException) {
-                    // This callback is invoked in an invalid request for verification is made,
-                    // for instance if the the phone number format is not valid.
-                    Log.w("TAG", "onVerificationFailed", e)
-
+                    Log.w("PhoneVerificationScreen", "onVerificationFailed", e)
                     _loading.value = false
                     onVerificationFailed(e.message.orEmpty())
-
-                    // Show a message and update the UI
-                    // ...
                 }
 
                 override fun onCodeSent(
                     verificationId: String,
                     token: PhoneAuthProvider.ForceResendingToken
                 ) {
-                    _loading.value = false
-                    onCodeSend()
+
+                    _verificationCode.value = verificationId
+
+                    Log.d("PhoneVerificationScreen", "ON_SEND_verificationId: $verificationId")
+                    Log.d(
+                        "PhoneVerificationScreen",
+                        "ON_SEND_verificationCode.value: ${_verificationCode.value}"
+                    )
+
                 }
             }
 
-            val result = withContext(Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
+                Log.d("PhoneVerificationScreen", "ON_SEND_phoneNumber: $phoneNumber")
                 authService.loginWithPhone(phoneNumber, activity, callback)
             }
-
-
             _loading.value = false
         }
-
-
     }
 
+    fun verifyCode(phoneCode: String, onSuccessVerification: () -> Unit) {
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                Log.d(
+                    "PhoneVerificationScreen",
+                    "VM__verificationCode.value: ${_verificationCode.value}"
+                )
+                authService.verifyCode(verificationCode.value.toString(), phoneCode)
+            }
 
+            if (result != null) {
+                onSuccessVerification()
+            }
+        }
+    }
 }
+
+
+*/

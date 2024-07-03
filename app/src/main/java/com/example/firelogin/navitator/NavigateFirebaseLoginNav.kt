@@ -44,19 +44,29 @@ fun NavigateFirebaseLoginNav(navController: NavHostController) {
             DetailScreen(
                 navigateToLogin = {
                     navController.navigate(Routes.LoginScreen.route) {
-                        popUpTo(Routes.DetailScreen.route) { inclusive = true } // per a que no es pugui tornar enrere
+                        popUpTo(Routes.DetailScreen.route) {
+                            inclusive = true
+                        } // per a que no es pugui tornar enrere
                     }
                 }
             )
         }
 
         composable(route = Routes.PhoneVerificationScreen.route) {
-           PhoneVerificationScreen {pin ->
+            PhoneVerificationScreen(
+                navigateToDetail = {
 
-           }
+                    navController.navigate(Routes.DetailScreen.route) {
+                        popUpTo(Routes.PhoneVerificationScreen.route) {
+                            inclusive = true
+                        } // per a que no es pugui tornar enrere
+                    }
+
+
+                },
+
+                )
         }
-
-
 
 
     }

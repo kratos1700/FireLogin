@@ -33,12 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 
-
 @Composable
 fun PinView(
     modifier: Modifier = Modifier,
     pinLength: Int = 6,
-    onPinEntered: (String) -> Unit
+    onPinEntered: (String) -> Unit // retorna el pin ingresat per l'usuari
 ) {
     var pin by remember { mutableStateOf("") }
 
