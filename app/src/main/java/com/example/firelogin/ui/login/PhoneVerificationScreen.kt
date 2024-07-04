@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -97,7 +98,7 @@ fun PhoneVerificationScreen(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Text(text = "Generate OTP", modifier = Modifier.padding(8.dp))
+                Text(text = "Registrar", modifier = Modifier.padding(8.dp))
             }
         }
 
@@ -117,6 +118,9 @@ fun PhoneVerificationScreen(
             )
         ) {
             Column {
+                Text(text = "Enter the verification code sent to your phone", style = MaterialTheme.typography.bodyMedium)
+                Spacer(modifier = Modifier.height(16.dp))
+
                 PinView(
                     modifier = Modifier.padding(16.dp),
                     pinLength = 6,
@@ -124,7 +128,7 @@ fun PhoneVerificationScreen(
                         if (pin.length == 6) {
                             loginViewModel.verifyCode(pin)
                         } else {
-                            Toast.makeText(context, "Please enter a valid OTP", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Please enter a valid Code", Toast.LENGTH_SHORT).show()
                         }
                     }
                 )

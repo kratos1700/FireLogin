@@ -41,7 +41,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.firelogin.R
-import com.example.firelogin.components.DialogPhone
+
 
 
 @Composable
@@ -154,6 +154,7 @@ fun LoginScreen(
         // Botón para login con número de teléfono
         Button(
             onClick = {
+
                navigateToVerificationPhone()
 
             },

@@ -107,6 +107,8 @@ class LoginViewModel @Inject constructor(private val authService: AuthService) :
 
     fun verifyCode(phoneCode: String) {
         val verificationId = _verificationCode.value
+        Log.d("PhoneVerificationScreen", "Verifi_verificationCode.value: ${_verificationCode.value}")
+
         if (verificationId != null) {
             _loading.value = true
             viewModelScope.launch {
