@@ -2,9 +2,12 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
-    id("com.google.gms.google-services")
+//    id("com.google.gms.google-services")
     alias(libs.plugins.devtoolsKsp)
     alias(libs.plugins.googleDaggerHilt)
+    alias(libs.plugins.google.gms.google.services)
+
+    //alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -64,6 +67,9 @@ dependencies {
 
     // Firebase
     implementation(libs.firebase.auth)
+    implementation(libs.play.services.auth)  // important per a la autenticació amb Google surt deprecat en esta opció
+    //implementation("com.google.android.gms:play-services-auth:21.2.0")  // important per a la autenticació amb Google
+
     // splash screen
     implementation(libs.androidx.splash.screen)
 

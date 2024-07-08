@@ -24,10 +24,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -46,6 +50,8 @@ fun PhoneVerificationScreen(
     val verificationCode by loginViewModel.verificationCode.collectAsState()
     val isLoggedIn by loginViewModel.isLoggedIn.collectAsState()
     val context = LocalContext.current
+
+
 
     Column(
         modifier = Modifier
@@ -70,7 +76,9 @@ fun PhoneVerificationScreen(
                     textAlign = TextAlign.End,
                 )
             }
+
         )
+
 
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -98,7 +106,7 @@ fun PhoneVerificationScreen(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Text(text = "Registrar", modifier = Modifier.padding(8.dp))
+                Text(text = "Enviar SMS", modifier = Modifier.padding(8.dp))
             }
         }
 

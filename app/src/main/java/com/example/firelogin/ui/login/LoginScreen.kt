@@ -2,6 +2,9 @@ package com.example.firelogin.ui.login
 
 import android.app.Activity
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,7 +44,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.firelogin.R
-
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.api.ApiException
 
 
 @Composable
@@ -56,9 +60,31 @@ fun LoginScreen(
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-   // var showPhoneLogin by remember { mutableStateOf(false) }
+    // var showPhoneLogin by remember { mutableStateOf(false) }
 
     val loading: Boolean by loginViewModel.loading.collectAsState()
+
+    val googleLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {  // si el resultat es correcte
+
+                val task =
+                    GoogleSignIn.getSignedInAccountFromIntent(result.data)  // obtenim el compte de google
+
+                try {
+                    val account =
+                        task.getResult(ApiException::class.java)!!  // obtenim el compte de google amb les dades de l'usuari i el parseem a ApiException
+                    loginViewModel.loginWithGoogle(account.idToken!!){
+                        navigateToDetail()
+                    }
+
+
+                } catch (e: ApiException) {
+                    showToast("Google sign in failed: ${e.message}", activity)
+                }
+
+            }
+        }
 
 
 
@@ -155,7 +181,7 @@ fun LoginScreen(
         Button(
             onClick = {
 
-               navigateToVerificationPhone()
+                navigateToVerificationPhone()
 
             },
             modifier = Modifier
@@ -172,6 +198,36 @@ fun LoginScreen(
             )
 
             Text("Login with phone number")
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Botón para login con número de teléfono
+        Button(
+            onClick = {
+
+                loginViewModel.onGoogleLoginSelected {
+                    // el launcher crea lo necesari i ho gestiona google.
+                    googleLauncher.launch(it.signInIntent)
+                }
+
+            },
+            modifier = Modifier
+                .fillMaxWidth(),
+
+            colors = ButtonDefaults.buttonColors(Color.Magenta)
+
+        ) {
+
+            Icon(
+                painter = painterResource(id = R.drawable.ic_google),
+                contentDescription = "Google icon ",
+                modifier = Modifier
+                    .padding(end = 12.dp)
+                    .size(24.dp)
+            )
+
+            Text("Login with Google")
         }
 
 

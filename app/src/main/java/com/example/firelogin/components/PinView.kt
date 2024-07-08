@@ -17,6 +17,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,8 +25,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 
@@ -40,6 +46,8 @@ fun PinView(
     onPinEntered: (String) -> Unit // retorna el pin ingresat per l'usuari
 ) {
     var pin by remember { mutableStateOf("") }
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current   // Per mostrar el teclat quan s'obre la vista
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         Row(
@@ -68,11 +76,22 @@ fun PinView(
             visualTransformation = VisualTransformation.None,
             decorationBox = { innerTextField -> Box { innerTextField() } },
             modifier = Modifier
+                .focusRequester(focusRequester)
+                .onFocusChanged {
+                    if (it.isFocused) {
+                        keyboardController?.show()
+                    }
+                }
                 .matchParentSize()
                 .background(Color.Transparent)
                 .padding(16.dp)
                 .alpha(0f)  // Amaga el text
         )
+    }
+
+    // Automàticament demanar el focus quan es mostra la vista
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
     }
 }
 
