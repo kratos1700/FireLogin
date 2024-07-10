@@ -23,7 +23,7 @@ fun DetailScreen(detailViewModel: DetailViewModel = hiltViewModel(), navigateToL
    // val activity = LocalContext.current as Activity
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp ),
+        modifier = Modifier.fillMaxSize().padding(24.dp ).padding(bottom = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {

@@ -63,7 +63,7 @@ fun PhoneVerificationScreen(
         TextField(
             enabled = !codeSent && !loading,
             value = phoneNumber.value,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
             onValueChange = { if (it.length <= 12) phoneNumber.value = it },
             placeholder = { Text(text = "Enter your phone number") },
             modifier = Modifier
