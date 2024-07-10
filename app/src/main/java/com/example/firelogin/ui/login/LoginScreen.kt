@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Phone
@@ -57,6 +59,7 @@ fun LoginScreen(
 ) {
 
     val activity = LocalContext.current as Activity
+    val scrollState = rememberScrollState()  // per poder fer scroll a la pantalla
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -74,7 +77,7 @@ fun LoginScreen(
                 try {
                     val account =
                         task.getResult(ApiException::class.java)!!  // obtenim el compte de google amb les dades de l'usuari i el parseem a ApiException
-                    loginViewModel.loginWithGoogle(account.idToken!!){
+                    loginViewModel.loginWithGoogle(account.idToken!!) {
                         navigateToDetail()
                     }
 
@@ -91,6 +94,7 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(scrollState)   // per poder fer scroll
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -155,6 +159,7 @@ fun LoginScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
+
         // Botón para login con email y contraseña
         Button(
             onClick = {
@@ -202,7 +207,7 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Botón para login con número de teléfono
+        // Botón para login con Google
         Button(
             onClick = {
 
@@ -228,6 +233,64 @@ fun LoginScreen(
             )
 
             Text("Login with Google")
+        }
+
+
+        // Boton para iniciar session con github
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Button(
+            onClick = {
+                loginViewModel.onGithubLoginSelected(activity = activity) {
+                    navigateToDetail()
+
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth(),
+
+            colors = ButtonDefaults.buttonColors(Color.Yellow),
+
+            ) {
+
+            Icon(
+                painter = painterResource(id = R.drawable.ic_github),
+                contentDescription = "Github icon ",
+                modifier = Modifier
+                    .padding(end = 12.dp)
+                    .size(24.dp), tint = Color.Black
+            )
+
+            Text("Login with Github", color = Color.Black)
+        }
+
+
+        // Botón para login con Twitter
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Button(
+            onClick = {
+                loginViewModel.onTwitterLoginSelected(activity = activity) {
+                    navigateToDetail()
+
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth(),
+
+            colors = ButtonDefaults.buttonColors(Color.Green),
+
+            ) {
+
+            Icon(
+                painter = painterResource(id = R.drawable.ic_twitter),
+                contentDescription = "Twitter icon ",
+                modifier = Modifier
+                    .padding(end = 12.dp)
+                    .size(24.dp), tint = Color.Black
+            )
+
+            Text("Login with Twitter", color = Color.Black)
         }
 
 

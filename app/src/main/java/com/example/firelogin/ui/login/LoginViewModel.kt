@@ -48,6 +48,7 @@ class LoginViewModel @Inject constructor(private val authService: AuthService) :
             _isLoggedIn.value = authService.isUserLoggedIn()
         }
     }
+    // LOGIN EN EMAIL I PASSWORD
 
     fun login(email: String, password: String, navigateToDetail: () -> Unit) {
         viewModelScope.launch {
@@ -66,7 +67,7 @@ class LoginViewModel @Inject constructor(private val authService: AuthService) :
         }
     }
 
-
+    // LOGIN EN NUM TELF
     fun loginWithPhone(phoneNumber: String, activity: Activity) {
         _loading.value = true
 
@@ -128,6 +129,8 @@ class LoginViewModel @Inject constructor(private val authService: AuthService) :
         }
     }
 
+
+    // LOGIN EN GOOGLE
     fun onGoogleLoginSelected(googleLauncherLogin: (GoogleSignInClient) -> Unit) {
 
         val gsc = authService.getGoogleClient()
@@ -137,16 +140,57 @@ class LoginViewModel @Inject constructor(private val authService: AuthService) :
     }
 
     fun loginWithGoogle(idToken: String, navigateToDetail: () -> Unit) {
-       viewModelScope.launch {
-           val result = withContext(Dispatchers.IO) {
-               authService.loginWithGoogle(idToken)
-           }
+        viewModelScope.launch {
+            _loading.value = true
+            val result = withContext(Dispatchers.IO) {
+                authService.loginWithGoogle(idToken)
+            }
+            if (result != null) {
+                _loading.value = true
+                navigateToDetail()
+            }
+            _loading.value = false
+        }
 
-                   if (result != null) {
-                      navigateToDetail()
-                   }
+    }
 
-       }
+    // LOGIN EN GITHUB
+
+
+    fun onGithubLoginSelected(activity: Activity, navigateToDetail: () -> Unit) {
+        viewModelScope.launch {
+            _loading.value = true
+            val result = withContext(Dispatchers.IO) {
+                authService.loginWithGithub(activity)
+            }
+            if (result != null) {
+                _loading.value = true
+                navigateToDetail()
+            }else{
+                _loading.value = false
+            }
+        }
+
+    }
+
+    // LOGIN EN TWITTER
+
+    fun onTwitterLoginSelected(activity: Activity, navigateToDetail: () -> Unit) {
+
+        viewModelScope.launch {
+            _loading.value = true
+            val result = withContext(Dispatchers.IO) {
+                authService.loginWithTwitter(activity)
+            }
+            if (result != null) {
+                _loading.value = true
+                navigateToDetail()
+            }else{
+                _loading.value = false
+            }
+        }
+
+
 
     }
 
