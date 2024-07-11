@@ -365,6 +365,36 @@ fun LoginScreen(
                 }
 
 
+
+                // Botón para login con TAnonimo
+                Spacer(modifier = Modifier.height(12.dp))
+
+                FloatingActionButton(
+                    onClick = {
+                        loginViewModel.onAnonymousLoginSelected {
+                            navigateToDetail()
+
+                        }
+                    },
+                    modifier = Modifier,
+
+                    //   colors = ButtonDefaults.buttonColors(Color.Green),
+                    contentColor = Color.White,
+                    containerColor = Color.Black,
+                ) {
+
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_anonymously),
+                        contentDescription = "Twitter icon ",
+                        modifier = Modifier
+
+                            .size(24.dp), tint = Color.White
+                    )
+
+                    //   Text("Login with Twitter", color = Color.Black)
+                }
+
+
             }
         }
 

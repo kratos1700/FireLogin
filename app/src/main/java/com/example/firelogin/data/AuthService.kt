@@ -139,17 +139,23 @@ class AuthService @Inject constructor(
     }
     // LOGIN EN GITHUB
 
-    suspend fun loginWithGithub(activity: Activity) : FirebaseUser?{
+    suspend fun loginWithGithub(activity: Activity): FirebaseUser? {
         val provider = OAuthProvider.newBuilder("github.com").apply {
-            scopes = listOf("user:email")  // permisos que necesitamos para acceder a la cuenta de github
+            scopes =
+                listOf("user:email")  // permisos que necesitamos para acceder a la cuenta de github
         }
 
-     return  suspendCancellableCoroutine<FirebaseUser?> { cancellableContinuation -> //suspendCancellableCoroutine es una función de extensión que nos permite crear una suspensión personalizada
+        return suspendCancellableCoroutine<FirebaseUser?> { cancellableContinuation -> //suspendCancellableCoroutine es una función de extensión que nos permite crear una suspensión personalizada
             firebaseAuth.pendingAuthResult?.addOnSuccessListener {//pendingAuthResult es una propiedad de FirebaseAuth que nos permite obtener el resultado de la autenticación pendiente
                 cancellableContinuation.resume(it.user)  //resume es una función de la suspensión que nos permite reanudar la ejecución de la suspensión con un valor
-            }?.addOnFailureListener { // addOnFailureListener es una función de la suspensión que nos permite agregar un oyente que se ejecutará cuando la suspensión falle
-                cancellableContinuation.resumeWithException(it) //resumeWithException es una función de la suspensión que nos permite reanudar la ejecución de la suspensión con una excepción
-            } ?:completeRegisterWithProvider(activity, provider.build(), cancellableContinuation) // ?: es un operador de elvis que nos permite ejecutar una expresión si el valor de la izquierda es nulo
+            }
+                ?.addOnFailureListener { // addOnFailureListener es una función de la suspensión que nos permite agregar un oyente que se ejecutará cuando la suspensión falle
+                    cancellableContinuation.resumeWithException(it) //resumeWithException es una función de la suspensión que nos permite reanudar la ejecución de la suspensión con una excepción
+                } ?: completeRegisterWithProvider(
+                activity,
+                provider.build(),
+                cancellableContinuation
+            ) // ?: es un operador de elvis que nos permite ejecutar una expresión si el valor de la izquierda es nulo
 
         }
 
@@ -159,8 +165,11 @@ class AuthService @Inject constructor(
         activity: Activity,
         provider: OAuthProvider,
         cancellableContinuation: CancellableContinuation<FirebaseUser?>
-    ){
-        firebaseAuth.startActivityForSignInWithProvider(activity, provider)  //startActivityForSignInWithProvider es una función de FirebaseAuth que nos permite iniciar la actividad de autenticación con un proveedor de OAuth
+    ) {
+        firebaseAuth.startActivityForSignInWithProvider(
+            activity,
+            provider
+        )  //startActivityForSignInWithProvider es una función de FirebaseAuth que nos permite iniciar la actividad de autenticación con un proveedor de OAuth
             .addOnSuccessListener {
                 cancellableContinuation.resume(it.user)  //
             }
@@ -172,22 +181,37 @@ class AuthService @Inject constructor(
 
     // LOGIN EN TWITTER
 
-   private suspend fun initRegisterWithProvider(activity: Activity,provider :OAuthProvider) : FirebaseUser?{
-        return  suspendCancellableCoroutine<FirebaseUser?> { cancellableContinuation -> //suspendCancellableCoroutine es una función de extensión que nos permite crear una suspensión personalizada
+    private suspend fun initRegisterWithProvider(
+        activity: Activity,
+        provider: OAuthProvider
+    ): FirebaseUser? {
+        return suspendCancellableCoroutine<FirebaseUser?> { cancellableContinuation -> //suspendCancellableCoroutine es una función de extensión que nos permite crear una suspensión personalizada
             firebaseAuth.pendingAuthResult?.addOnSuccessListener {//pendingAuthResult es una propiedad de FirebaseAuth que nos permite obtener el resultado de la autenticación pendiente
                 cancellableContinuation.resume(it.user)  //resume es una función de la suspensión que nos permite reanudar la ejecución de la suspensión con un valor
-            }?.addOnFailureListener { // addOnFailureListener es una función de la suspensión que nos permite agregar un oyente que se ejecutará cuando la suspensión falle
-                cancellableContinuation.resumeWithException(it) //resumeWithException es una función de la suspensión que nos permite reanudar la ejecución de la suspensión con una excepción
-            } ?:completeRegisterWithProvider(activity, provider, cancellableContinuation) // ?: es un operador de elvis que nos permite ejecutar una expresión si el valor de la izquierda es nulo
+            }
+                ?.addOnFailureListener { // addOnFailureListener es una función de la suspensión que nos permite agregar un oyente que se ejecutará cuando la suspensión falle
+                    cancellableContinuation.resumeWithException(it) //resumeWithException es una función de la suspensión que nos permite reanudar la ejecución de la suspensión con una excepción
+                } ?: completeRegisterWithProvider(
+                activity,
+                provider,
+                cancellableContinuation
+            ) // ?: es un operador de elvis que nos permite ejecutar una expresión si el valor de la izquierda es nulo
 
         }
 
     }
 
 
-   suspend fun loginWithTwitter(activity: Activity): FirebaseUser? {
+    suspend fun loginWithTwitter(activity: Activity): FirebaseUser? {
         val provider = OAuthProvider.newBuilder("twitter.com").build()
         return initRegisterWithProvider(activity, provider)
+    }
+
+
+    // LOGIN ANONIMO
+    suspend fun loginAnonymously(): FirebaseUser? {
+        return firebaseAuth.signInAnonymously().await().user  // await es una función de extensión que nos permite esperar a que se complete la tarea
+
     }
 
 
