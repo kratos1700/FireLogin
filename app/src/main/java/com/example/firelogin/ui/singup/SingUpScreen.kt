@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -82,6 +85,18 @@ fun SingUpScreen(singUpViewModel: SingUpViewModel = hiltViewModel(), navigateToD
                     imeAction = ImeAction.Next
                 ),
                 modifier = Modifier.fillMaxWidth()
+                    .background(
+                        color = Color.White.copy(alpha = 0.8f),
+                        shape = MaterialTheme.shapes.medium),
+                // esta part serveix per a que el textfield no tingui borde quan esta seleccionat (focusedBorderColor) i quan no esta seleccionat (unfocusedBorderColor
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    errorContainerColor = Color.Transparent,
+                    cursorColor = LocalContentColor.current,
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -95,6 +110,18 @@ fun SingUpScreen(singUpViewModel: SingUpViewModel = hiltViewModel(), navigateToD
                     imeAction = ImeAction.Done
                 ),
                 modifier = Modifier.fillMaxWidth()
+                    .background(
+                        color = Color.White.copy(alpha = 0.8f),
+                        shape = MaterialTheme.shapes.medium),
+                // esta part serveix per a que el textfield no tingui borde quan esta seleccionat (focusedBorderColor) i quan no esta seleccionat (unfocusedBorderColor
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    errorContainerColor = Color.Transparent,
+                    cursorColor = LocalContentColor.current,
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
